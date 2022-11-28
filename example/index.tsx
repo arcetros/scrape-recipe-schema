@@ -4,8 +4,14 @@ import * as ReactDOM from 'react-dom';
 import getRecipeData from '../.';
 
 const App = () => {
-  getRecipeData('https://stryve.life/recipes/creamy-courgette-potato-bake');
-  return <div>test</div>;
+    React.useEffect(() => {
+        const getData = async () => {
+            const data = await getRecipeData('https://www.hiddenvalley.com/recipe/truffalo-chicken-ranch-dip/');
+            console.log(data);
+        };
+        getData();
+    }, []);
+    return <div>scrape-recipe-schema</div>;
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
