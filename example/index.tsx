@@ -1,8 +1,8 @@
 import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// import getRecipeData from '../dist';
-import getRecipeData from 'scrape-recipe-schema';
+import getRecipeData from '../dist';
+// import getRecipeData from 'scrape-recipe-schema';
 
 const App = () => {
     React.useEffect(() => {
