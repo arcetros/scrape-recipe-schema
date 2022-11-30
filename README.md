@@ -1,6 +1,6 @@
 # scrape-recipe-schema
 
-> scrape-recipe-schema is a JavaScript library that will help you to scrape recipe Microdata/JSON-LD schema.
+> scrape-recipe-schema is a JavaScript library that will help you to scrape recipe JSON-LD schema.
 
 ## 🚀 Get started
 
@@ -17,7 +17,7 @@ $ yarn add scrape-schema-recipe
 ```js
 import getRecipeData from 'scrape-recipe-schema';
 
-const url = 'https://stryve.life/recipes/creamy-courgette-potato-bake';
+const url = 'https://example/recipes/creamy-courgette-potato-bake';
 
 getRecipeData(url).then(data => {
     console.log(data);
@@ -30,16 +30,34 @@ or with `async/await`
 import getRecipeData from 'scrape-recipe-schema';
 
 async function run() {
-    const url = 'https://stryve.life/recipes/creamy-courgette-potato-bake';
+    const url = 'https://example/recipes/creamy-courgette-potato-bake';
     const data = await getMetaData(url);
     console.log(data);
 }
 ```
 
-This will return:
+## 📜 Here's what scrape-recipe-schema currently tries to scrape:
 
 ```js
-/* Not yet implemented, but the data is exist. You can use it
+{
+    @context: "http://schema.org",
+    @type: "Recipe",
+    author: {@type: 'Person', name: 'Rob'},
+    cookTime: "PT45M",
+    datePublished: "....",
+    description: "....",
+    image: "https://example/9ae78bc2-ad5e-449c-8626-8c9faa37054c_creamy-courgette-potato-bake.png?auto=compress,format",
+    keywords: "....",
+    name: "Creamy courgette & potato bake",
+    nutrition: {@type: 'NutritionInformation', calories: '572 calories', proteinContent: '13.8g', carbohydrateContent: '24.9g', fatContent: '73.2g', …},
+    prepTime:"PT25M",
+    recipeIngredient: ['1000g Potato', '2 Courgette', '2 Brown onion', '3tsp Olive oil', '120g Cashew nuts', '200ml Vegetable stock', '200ml Almond milk', '6 Garlic cloves', '18tsp Nutritional yeast', '2tsp Sea salt', '2tsp Smoked paprika'],
+    recipeInstructions: [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}],
+    recipeYield: 4,
+    totalTime: "PT70M",
+    url: "https://example/recipes/creamy-courgette-potato-bake",
+    _format: "json-ld"
+}
 ```
 
 ## ⚙️ Configuration

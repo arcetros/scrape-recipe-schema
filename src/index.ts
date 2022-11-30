@@ -1,23 +1,39 @@
 import axios from 'axios';
 import * as domino from 'domino';
 
-import { Options } from './types';
+import { Options, RootSchema } from './types';
 import { isValidHttpUrl } from './utils';
 
 const defaultOptions = {
-    maxRedirects: 5,
-    lang: '*',
-    timeout: 10000,
-    forceImageHttps: true,
-    customRules: {},
+    maxRedirects: 5, // Maximum number of redirects to follow
+    lang: '*', // Specify accept-language header
+    timeout: 10000, // Request timeout in miliseconds
 };
 
-const getRecipeData = async (input: string | Partial<Options>, inputOptions: Partial<Options> = {}): Promise<any> => {
-    let siteUrl, html, recipe;
+const convert_json_ld_recipe = (rec: RootSchema, nonStandard_attrs: boolean = false, url: string | undefined = undefined) => {
+    let recCopy = rec;
+    if (nonStandard_attrs) {
+        recCopy['_format'] = 'json-ld';
+    }
+
+    // store url to schema
+    if (url) {
+        if (recCopy.url && recCopy.url !== url && nonStandard_attrs) {
+            recCopy['_source_url'] = url;
+        } else {
+            recCopy['url'] = url;
+        }
+    }
+
+    return recCopy;
+};
+
+const getRecipeData = async (input: string | Partial<Options>, inputOptions: Partial<Options> = {}): Promise<RootSchema | undefined> => {
+    let siteUrl: string, html, recipe: RootSchema | undefined;
 
     if (typeof input === 'object') {
         inputOptions = input;
-        siteUrl = input.url;
+        siteUrl = input.url as string;
     } else {
         siteUrl = input;
     }
@@ -45,29 +61,33 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
     const window = domino.createWindow(html).document;
     const jsonLds = Object.values(window.querySelectorAll("script[type='application/ld+json']"));
 
-    jsonLds.forEach(json => {
-        if (json.textContent) {
-            const data = JSON.parse(json.textContent);
-            if (data['@graph'] && Array.isArray(data['@graph'])) {
-                data['@graph'].forEach(g => {
-                    if (g['@type'] === 'Recipe') {
-                        recipe = g;
-                    }
-                });
-            }
+    if (jsonLds.length > 0) {
+        jsonLds.forEach(json => {
+            if (json.textContent) {
+                const data = JSON.parse(json.textContent);
+                if (data['@graph'] && Array.isArray(data['@graph'])) {
+                    data['@graph'].forEach(g => {
+                        if (g['@type'] === 'Recipe') {
+                            const recipeData = convert_json_ld_recipe(g, true, siteUrl);
+                            recipe = recipeData;
+                        }
+                    });
+                }
 
-            if (data['@type'] === 'Recipe') {
-                recipe = data;
-            }
+                if (data['@type'] === 'Recipe') {
+                    const recipeData = convert_json_ld_recipe(data, true, siteUrl);
+                    recipe = recipeData;
+                }
 
-            if (Array.isArray(data['@type']) && data['@type'].includes('Recipe')) {
-                recipe = data;
-            }
+                if (Array.isArray(data['@type']) && data['@type'].includes('Recipe')) {
+                    recipe = data;
+                }
 
+                return undefined;
+            }
             return undefined;
-        }
-        return undefined;
-    });
+        });
+    }
 
     if (recipe !== undefined) {
         return recipe;
