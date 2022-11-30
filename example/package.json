@@ -8,7 +8,8 @@
         "build": "parcel build index.html"
     },
     "dependencies": {
-        "react-app-polyfill": "^1.0.0"
+        "react-app-polyfill": "^1.0.0",
+        "scrape-recipe-schema": "^0.1.1"
     },
     "alias": {
         "react": "../node_modules/react",

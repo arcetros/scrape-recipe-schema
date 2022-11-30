@@ -37,6 +37,25 @@
     },
     "name": "scrape-recipe-schema",
     "author": "arcetros",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arcetros/scrape-recipe-schema.git"
+    },
+    "bugs": {
+        "url": "https://github.com/arcetros/scrape-recipe-schema"
+    },
+    "homepage": {
+        "url": "https://github.com/arcetros/scrape-recipe-schema"
+    },
+    "keywords": [
+        "recipe",
+        "food-recipe",
+        "scraper",
+        "json-ld",
+        "jsonld",
+        "micro-data",
+        "microdata"
+    ],
     "module": "dist/scrape-recipe-schema.esm.js",
     "size-limit": [
         {
