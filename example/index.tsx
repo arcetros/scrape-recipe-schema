@@ -7,8 +7,8 @@ import getRecipeData from '../dist';
 const App = () => {
     React.useEffect(() => {
         const getData = async () => {
-            const data = await getRecipeData('https://stryve.life/recipes/creamy-courgette-potato-bake');
-            console.log(data);
+            const data = await getRecipeData({ url: 'https://stryve.life/recipes/creamy-courgette-potato-bake' });
+            console.log(data.data?.name);
         };
         getData();
     }, []);

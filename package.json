@@ -82,6 +82,7 @@
     },
     "dependencies": {
         "axios": "^1.2.0",
-        "domino": "^2.1.6"
+        "domino": "^2.1.6",
+        "jsonschema": "^1.4.1"
     }
 }

@@ -1,8 +1,10 @@
 import axios from 'axios';
 import * as domino from 'domino';
+import { validate } from 'jsonschema';
 
-import { Options, RootSchema } from './types';
+import { Data, Options, RootSchema } from './types';
 import { isValidHttpUrl } from './utils';
+import schema from './requiredProps.json';
 
 const defaultOptions = {
     maxRedirects: 5, // Maximum number of redirects to follow
@@ -28,7 +30,17 @@ const convert_json_ld_recipe = (rec: RootSchema, nonStandard_attrs: boolean = fa
     return recCopy;
 };
 
-const getRecipeData = async (input: string | Partial<Options>, inputOptions: Partial<Options> = {}): Promise<RootSchema | undefined> => {
+const validateRecipeSchema = (rec: RootSchema) => {
+    const validator = { name: rec.name, recipeIngredient: rec.recipeIngredient, recipeInstructions: rec.recipeInstructions };
+    const response = validate(validator, schema);
+
+    if (!response.valid) {
+        return { status: false, data: undefined, message: 'Recipe not found on page' };
+    }
+    return { status: true, data: rec, message: 'success' };
+};
+
+const getRecipeData = async (input: string | Partial<Options>, inputOptions: Partial<Options> = {}): Promise<Data> => {
     let siteUrl: string, html, recipe: RootSchema | undefined;
 
     if (typeof input === 'object') {
@@ -44,7 +56,7 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
 
     const options = Object.assign({}, defaultOptions, inputOptions);
 
-    if (!options.url) {
+    if (!options.html) {
         const response = await axios.get(siteUrl as string, {
             responseType: 'text',
             headers: {
@@ -77,22 +89,21 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
                 if (data['@type'] === 'Recipe') {
                     const recipeData = convert_json_ld_recipe(data, true, siteUrl);
                     recipe = recipeData;
+                    return;
                 }
 
                 if (Array.isArray(data['@type']) && data['@type'].includes('Recipe')) {
                     recipe = data;
+                    return;
                 }
-
-                return undefined;
             }
-            return undefined;
         });
     }
 
     if (recipe !== undefined) {
-        return recipe;
+        return validateRecipeSchema(recipe);
     }
-    return undefined;
+    return { status: false, data: undefined, message: 'No json+ld schema found' };
 };
 
 export default getRecipeData;

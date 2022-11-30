@@ -46,3 +46,9 @@ export interface RootSchema {
     _source_url: string;
     url: string;
 }
+
+export interface Data {
+    status: boolean;
+    data: RootSchema | undefined;
+    message: string;
+}

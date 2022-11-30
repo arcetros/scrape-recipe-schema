@@ -20,7 +20,7 @@ import getRecipeData from 'scrape-recipe-schema';
 const url = 'https://example/recipes/creamy-courgette-potato-bake';
 
 getRecipeData(url).then(data => {
-    console.log(data);
+    console.log(recipe);
 });
 ```
 
@@ -32,7 +32,7 @@ import getRecipeData from 'scrape-recipe-schema';
 async function run() {
     const url = 'https://example/recipes/creamy-courgette-potato-bake';
     const data = await getMetaData(url);
-    console.log(data);
+    console.log(recipe);
 }
 ```
 
@@ -40,23 +40,27 @@ async function run() {
 
 ```js
 {
-    @context: "http://schema.org",
-    @type: "Recipe",
-    author: {@type: 'Person', name: 'Rob'},
-    cookTime: "PT45M",
-    datePublished: "....",
-    description: "....",
-    image: "https://example/9ae78bc2-ad5e-449c-8626-8c9faa37054c_creamy-courgette-potato-bake.png?auto=compress,format",
-    keywords: "....",
-    name: "Creamy courgette & potato bake",
-    nutrition: {@type: 'NutritionInformation', calories: '572 calories', proteinContent: '13.8g', carbohydrateContent: '24.9g', fatContent: '73.2g', …},
-    prepTime:"PT25M",
-    recipeIngredient: ['1000g Potato', '2 Courgette', '2 Brown onion', '3tsp Olive oil', '120g Cashew nuts', '200ml Vegetable stock', '200ml Almond milk', '6 Garlic cloves', '18tsp Nutritional yeast', '2tsp Sea salt', '2tsp Smoked paprika'],
-    recipeInstructions: [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}],
-    recipeYield: 4,
-    totalTime: "PT70M",
-    url: "https://example/recipes/creamy-courgette-potato-bake",
-    _format: "json-ld"
+    status: true,
+    data: {
+        @context: "http://schema.org",
+        @type: "Recipe",
+        author: {@type: 'Person', name: 'Rob'},
+        cookTime: "PT45M",
+        datePublished: "....",
+        description: "....",
+        image: "https://example/9ae78bc2-ad5e-449c-8626-8c9faa37054c_creamy-courgette-potato-bake.png?auto=compress,format",
+        keywords: "....",
+        name: "Creamy courgette & potato bake",
+        nutrition: {@type: 'NutritionInformation', calories: '572 calories', proteinContent: '13.8g', carbohydrateContent: '24.9g', fatContent: '73.2g', …},
+        prepTime:"PT25M",
+        recipeIngredient: ['1000g Potato', '2 Courgette', '2 Brown onion', '3tsp Olive oil', '120g Cashew nuts', '200ml Vegetable stock', '200ml Almond milk', '6 Garlic cloves', '18tsp Nutritional yeast', '2tsp Sea salt', '2tsp Smoked paprika'],
+        recipeInstructions: [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}],
+        recipeYield: 4,
+        totalTime: "PT70M",
+        url: "https://example/recipes/creamy-courgette-potato-bake",
+        _format: "json-ld"
+    },
+    message: "success"
 }
 ```
 
