@@ -5,9 +5,9 @@ import microdata from 'microdata-node';
 import { validate } from 'jsonschema';
 
 import type { BaseSchema, Data, Options, RootSchema } from './types';
+import { isValidHttpUrl, propertyTransformerMap } from './utilities';
+
 import schema from './requiredProps.json';
-import { isValidHttpUrl } from './utilities/isValidHttpUrl';
-import propertyTransformerMap from './utilities/transformRecipes';
 
 const defaultOptions = {
     maxRedirects: 5, // Maximum number of redirects to follow
@@ -133,6 +133,8 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
     const window = domino.createWindow(html).document;
     const jsonLds = Object.values(window.querySelectorAll("script[type='application/ld+json']"));
 
+
+    // search for json-ld tags first, then search for micro data if json-ld tags not present
     try {
         if (jsonLds.length > 0) {
                 jsonLds.forEach(json => {
