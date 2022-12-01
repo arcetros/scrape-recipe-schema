@@ -26,25 +26,36 @@ export interface RecipeInstruction {
     text: string;
 }
 
-export interface RootSchema {
-    '@context': string;
-    '@type': string;
-    author: Author;
-    cookTime: string;
-    datePublished: string;
-    description: string;
-    image: string;
-    keywords: string;
-    name: string;
-    nutrition: Nutrition;
-    prepTime: string;
+export interface BaseSchema extends RootSchema {
+    photo: string;
+    thumbnailUrl: string;
+    yield: string | number;
     recipeIngredient: string[];
-    recipeInstructions: RecipeInstruction[];
-    recipeYield: number;
-    totalTime: string;
-    _format: string;
-    _source_url: string;
+    ingredients: string[];
+    ingredient: string[];
+    instructions: string[];
+    step: string[];
+    recipeCategory: string[];
+    recipeCuisine: string[];
+    recipeType: string[];
+    tag: string[];
+}
+
+export interface RootSchema {
     url: string;
+    name: string;
+    image: string;
+    description: string;
+    cookTime: string;
+    prepTime: string;
+    totalTime: string;
+    recipeYield: string;
+    recipeIngredients: string[];
+    recipeInstructions: string[];
+    recipeCategories: string[];
+    recipeCuisines: string[];
+    recipeTypes: string[];
+    keywords: string[];
 }
 
 export interface Data {

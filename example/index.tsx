@@ -7,7 +7,7 @@ import getRecipeData from '../dist';
 const App = () => {
     React.useEffect(() => {
         const getData = async () => {
-            const data = await getRecipeData({ url: 'https://stryve.life/recipes/creamy-courgette-potato-bake' });
+            const data = await getRecipeData({ url: 'https://stackoverflow.com/questions/62162731/skipping-loop-iteration-after-catch-javascript' });
             console.log(data);
         };
         getData();
