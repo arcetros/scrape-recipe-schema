@@ -4,7 +4,7 @@ import * as domino from 'domino';
 import microdata from 'microdata-node';
 import { validate } from 'jsonschema';
 
-import type { BaseSchema, Data, Options, RootSchema } from './types';
+import { BaseSchema, Data, Options, RootSchema } from './types';
 import { isValidHttpUrl, propertyTransformerMap } from './utilities';
 
 import schema from './requiredProps.json';
@@ -133,34 +133,33 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
     const window = domino.createWindow(html).document;
     const jsonLds = Object.values(window.querySelectorAll("script[type='application/ld+json']"));
 
-
     // search for json-ld tags first, then search for micro data if json-ld tags not present
     try {
         if (jsonLds.length > 0) {
-                jsonLds.forEach(json => {
-                    if (json.textContent) {
-                        const data = JSON.parse(json.textContent);
-                        if (data['@graph'] && Array.isArray(data['@graph'])) {
-                            data['@graph'].forEach(g => {
-                                if (g['@type'] === 'Recipe') {
-                                    recipe = convert_json_ld_recipe(g, true, siteUrl);
-                                }
-                            });
-                        }
-        
-                        if (data['@type'] === 'Recipe') {
-                            recipe = convert_json_ld_recipe(data, true, siteUrl);
-                        }
-        
-                        if (Array.isArray(data['@type']) && data['@type'].includes('Recipe')) {
-                            recipe = convert_json_ld_recipe(data, true, siteUrl);
-                        }
-                    } else {
-                        throw new Error("Something went wrong with this JSON+LD tags :(")
+            jsonLds.forEach(json => {
+                if (json.textContent) {
+                    const data = JSON.parse(json.textContent);
+                    if (data['@graph'] && Array.isArray(data['@graph'])) {
+                        data['@graph'].forEach(g => {
+                            if (g['@type'] === 'Recipe') {
+                                recipe = convert_json_ld_recipe(g, true, siteUrl);
+                            }
+                        });
                     }
-                });
+
+                    if (data['@type'] === 'Recipe') {
+                        recipe = convert_json_ld_recipe(data, true, siteUrl);
+                    }
+
+                    if (Array.isArray(data['@type']) && data['@type'].includes('Recipe')) {
+                        recipe = convert_json_ld_recipe(data, true, siteUrl);
+                    }
+                } else {
+                    throw new Error('Something went wrong with this JSON+LD tags :(');
+                }
+            });
         } else {
-            throw new Error("JSON+LD Schema not found. trying to search for microdata.")
+            throw new Error('JSON+LD Schema not found. trying to search for microdata.');
         }
     } catch {
         try {

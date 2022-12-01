@@ -113,7 +113,7 @@ export function transformInstructions(value: any) {
             if (item.text) {
                 return cleanString(item.text);
             }
-            return;
+            return undefined;
         });
     }
     return;
