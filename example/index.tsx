@@ -1,14 +1,14 @@
 import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import getRecipeData from '../dist';
-// import getRecipeData from 'scrape-recipe-schema';
+// import getRecipeData from '../dist';
+import getRecipeData from 'scrape-recipe-schema';
 
 const App = () => {
     React.useEffect(() => {
         const getData = async () => {
             const { data } = await getRecipeData({ url: 'https://stryve.life/recipes/creamy-courgette-potato-bake' });
-            console.log(data?.recipeIngredients);
+            console.log(data);
         };
         getData();
     }, []);

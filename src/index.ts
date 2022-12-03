@@ -11,7 +11,6 @@ import schema from './requiredProps.json';
 
 const defaultOptions = {
     maxRedirects: 5, // Maximum number of redirects to follow
-    lang: '*', // Specify accept-language header
     timeout: 10000, // Request timeout in miliseconds
 };
 
@@ -110,31 +109,35 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
         siteUrl = input;
     }
 
-    if (!isValidHttpUrl(siteUrl as string)) {
+    const options = Object.assign({}, defaultOptions, inputOptions);
+
+    if (!isValidHttpUrl(siteUrl as string) && !options.html) {
         throw new Error('url must start with http:// or https://');
     }
 
-    const options = Object.assign({}, defaultOptions, inputOptions);
-
-    if (!options.html) {
-        const response = await axios.get(siteUrl as string, {
-            responseType: 'text',
-            headers: {
-                'Accept-Language': options.lang,
-            },
-            timeout: options.timeout,
-            maxRedirects: options.maxRedirects,
-        });
-        html = await response.data;
-    } else {
-        html = options.html as string;
+    try {
+        if (!options.html) {
+            console.log('this runs');
+            const response = await axios.get(siteUrl as string, {
+                responseType: 'text',
+                headers: {
+                    'Accept-Language': options.lang,
+                },
+                timeout: options.timeout,
+                maxRedirects: options.maxRedirects,
+            });
+            html = await response.data;
+        } else {
+            html = options.html as string;
+        }
+    } catch (error) {
+        throw new Error('Something went wrong');
     }
-
-    const window = domino.createWindow(html).document;
-    const jsonLds = Object.values(window.querySelectorAll("script[type='application/ld+json']"));
 
     // search for json-ld tags first, then search for micro data if json-ld tags not present
     try {
+        const window = domino.createWindow(html).document;
+        const jsonLds = Object.values(window.querySelectorAll("script[type='application/ld+json']"));
         if (jsonLds.length > 0) {
             jsonLds.forEach(json => {
                 if (json.textContent) {
@@ -154,8 +157,6 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
                     if (Array.isArray(data['@type']) && data['@type'].includes('Recipe')) {
                         recipe = convert_json_ld_recipe(data, true, siteUrl);
                     }
-                } else {
-                    throw new Error('Something went wrong with this JSON+LD tags :(');
                 }
             });
         } else {

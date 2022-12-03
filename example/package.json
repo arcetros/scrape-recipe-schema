@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "react-app-polyfill": "^1.0.0",
-        "scrape-recipe-schema": "^0.1.1"
+        "scrape-recipe-schema": "^0.1.3"
     },
     "alias": {
         "react": "../node_modules/react",
