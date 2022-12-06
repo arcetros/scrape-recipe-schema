@@ -62,9 +62,11 @@ const consolidateRecipeProperties = (prospectiveProperties: BaseSchema) => {
     };
 };
 
-const convert_json_ld_recipe = (rec: BaseSchema, nonStandard_attrs: boolean = false, url: string | undefined = undefined) => {
+const convert_json_ld_recipe = (rec: BaseSchema, nonStandard_attrs: boolean = false, url: string | undefined) => {
     const consolidatedRecipe = consolidateRecipeProperties(rec);
-    const transformedRecipe: any = {};
+    const transformedRecipe: BaseSchema = {} as BaseSchema;
+
+    transformedRecipe['url'] = url as string;
 
     if (nonStandard_attrs) {
         transformedRecipe['_format'] = 'json-ld';
@@ -72,18 +74,10 @@ const convert_json_ld_recipe = (rec: BaseSchema, nonStandard_attrs: boolean = fa
         transformedRecipe['_format'] = 'microdata';
     }
 
-    if (url) {
-        if (consolidatedRecipe.url && consolidatedRecipe.url !== url && nonStandard_attrs) {
-            transformedRecipe['_source_url'] = url;
-        } else {
-            consolidatedRecipe['url'] = url;
-        }
-    }
-
     Object.entries(consolidatedRecipe).forEach(([key, value]) => {
         const propertyTransformer = propertyTransformerMap[key];
         if (propertyTransformer && value) {
-            transformedRecipe[key] = propertyTransformer(value, key);
+            transformedRecipe[key as keyof BaseSchema] = propertyTransformer(value, key);
         }
     });
     return transformedRecipe;
@@ -117,7 +111,6 @@ const getRecipeData = async (input: string | Partial<Options>, inputOptions: Par
 
     try {
         if (!options.html) {
-            console.log('this runs');
             const response = await axios.get(siteUrl as string, {
                 responseType: 'text',
                 headers: {

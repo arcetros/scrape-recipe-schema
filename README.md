@@ -1,10 +1,10 @@
 # scrape-recipe-schema
 
-scrape-recipe-schema is a JavaScript library that will help you to scrape recipe JSON-LD/Microdata.
+[scrape-recipe-scehma](https://www.npmjs.com/package/scrape-recipe-schema) is a JavaScript library that will help you to extract recipe content from any websites, no guessing involved. Reading metadata is all that needed.
 
 ## 🚀 Get started
 
-install [scrape-recipe-scehma](https://github.com/arcetros/scrape-recipe-schema) from npm
+install [scrape-recipe-scehma](https://www.npmjs.com/package/scrape-recipe-schema) from npm
 
 ```bash
 $ npm install scrape-schema-recipe
@@ -14,13 +14,19 @@ $ yarn add scrape-schema-recipe
 
 ## 📚 Examples
 
+Here are some examples on how to use [scrape-recipe-schema](https://www.npmjs.com/package/scrape-recipe-schema):
+
+### Basic
+
+Pass a url as first parameter and [scrape-recipe-schema](https://www.npmjs.com/package/scrape-recipe-schema) will attempt to extract the recipe content from that website.
+
 ```js
 import getRecipeData from 'scrape-recipe-schema';
 
 const url = 'https://example/recipes/creamy-courgette-potato-bake';
 
-getRecipeData(url).then(data => {
-    console.log(recipe);
+getRecipeData(url).then({ data } => {
+    console.log(data);
 });
 ```
 
@@ -31,10 +37,68 @@ import getRecipeData from 'scrape-recipe-schema';
 
 async function run() {
     const url = 'https://example/recipes/creamy-courgette-potato-bake';
-    const data = await getMetaData(url);
-    console.log(recipe);
+    const { data } = await getMetaData(url);
+    console.log(data);
 }
 ```
+
+Example file located at [example/index.jtsx](/example/index.tsx).
+
+---
+
+### HTML String
+
+If you already have HTML string and dont want [scrape-recipe-schema](https://www.npmjs.com/package/scrape-recipe-schema) to make an http request, you can specify it in option object:
+
+> **Note**
+> This can be work only if there is JSON-LD or Microdata schema tags were present.
+
+```js
+import getRecipeData from 'scrape-recipe-schema';
+
+const html = `
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "Recipe",
+            "name": "Classic Marinara Sauce",
+            "recipeIngredient": [
+                "1 28-ounce can whole tomatoes",
+                "1/4 cup olive oil",
+                "7 garlic peeled and slivered",
+                "Small dried whole chile",
+                "1 teaspoon kosher salt",
+                "1 large fresh basil sprig"
+            ]
+        }
+     </script>
+`;
+
+const { data } = await getRecipeData({ html: html });
+```
+
+This is example for `JSON+LD`. Learn more aobut this format [here](https://json-ld.org/).
+
+---
+
+```js
+import getRecipeData from 'scrape-recipe-schema';
+
+const html = `
+    <div itemscope itemtype="https://schema.org/Recipe">
+        <h1 itemprop="name">Simple Marinara Sauce</h1>
+        <div>
+            <span itemprop="recipeIngredient">2 cans stewed tomatoes</span>
+            <span itemprop="recipeIngredient">1 teaspoon dried oregano</span>
+            <span itemprop="recipeIngredient">1 teaspoon salt</span>
+        </div>
+    </div>
+`;
+
+const { data } = await getRecipeData({ html: html });
+```
+
+This is example for `Microdata`. Learn more aobut this format [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Microdata).
 
 ## 📜 Here's what scrape-recipe-schema currently tries to scrape:
 
@@ -43,6 +107,7 @@ async function run() {
     status: true,
     data: {
         "_format": "json-ld",
+        "url": "https://example/recipes/creamy-courgette-potato-bake"
         "name": "Creamy courgette & potato bake",
         "image": "https://example/stryve/9ae78bc2-ad5e-449c-8626-8c9faa37054c_creamy-courgette-potato-bake.png?auto=compress,format",
         "cookTime": "45 minutes",
@@ -83,7 +148,7 @@ async function run() {
 
 ## ⚙️ Configuration
 
-You can change the behaviour of [scrape-recipe-scehma](https://github.com/arcetros/scrape-recipe-schema) by passing an options object:
+You can change the behaviour of [scrape-recipe-scehma](https://www.npmjs.com/package/scrape-recipe-schema) by passing an options object:
 
 ```js
 import getRecipeData from 'scrape-recipe-schema';
@@ -91,8 +156,6 @@ import getRecipeData from 'scrape-recipe-schema';
 const options = {
     url: 'https://github.com/arcetros/scrape-recipe-schema', // URL of web page
     maxRedirects: 0, // Maximum number of redirects to follow (default: 5)
-    ua: 'MyApp', // Specify User-Agent header
-    lang: 'id-ID', // Specify Accept-Language header
     timeout: 1000, // Request timeout in milliseconds (default: 10000ms)
 };
 

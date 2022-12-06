@@ -1,7 +1,7 @@
 import { MATCH_HTML_TAGS, MATCH_LINE_BREAK, MATCH_MULTI_SPACE } from './regex';
 import { parse } from './iso8601';
 
-export function transformImage(value: any) {
+export function transformImage(value: string | Record<string, any>) {
     if (typeof value === 'string') {
         return value;
     }
@@ -17,7 +17,7 @@ export function transformImage(value: any) {
     return value;
 }
 
-export function transformToList(value: any) {
+export function transformToList(value: string | Record<string, any>) {
     if (typeof value === 'string') {
         if (value.includes(',')) {
             return value.split(',').map(item => item.trim());
@@ -41,7 +41,7 @@ export function transformToString(value: string) {
     return value;
 }
 
-export function transformISOToString(dateObj: any) {
+export function transformISOToString(dateObj: Record<string, any>) {
     let date = '';
 
     if (dateObj.days) {
@@ -63,7 +63,7 @@ export function transformISOToString(dateObj: any) {
     return date.trim();
 }
 
-export function transformToTime(value: any) {
+export function transformToTime(value: string) {
     const time = transformToString(value);
     try {
         const parsedISODuration = parse(time);
@@ -86,11 +86,11 @@ export function cleanString(str: string) {
         .trim();
 }
 
-export function transformToCleanString(value: any) {
+export function transformToCleanString(value: string) {
     return cleanString(transformToString(value));
 }
 
-export function transformInstructions(value: any) {
+export function transformInstructions(value: string | Record<string, any>) {
     if (typeof value === 'string') {
         const cleanedValue = cleanString(value);
         if (cleanedValue.includes('.,')) {
@@ -136,7 +136,7 @@ export function transformIngredients(value: Record<string, any>) {
     }
 
     // array of objects (microdata)
-    const mappedItems = [] as any[];
+    const mappedItems = [] as Array<any>;
 
     Object.entries(value).forEach(([, item]: any) => {
         if (item.properties) {

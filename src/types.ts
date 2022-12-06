@@ -27,6 +27,8 @@ export interface RecipeInstruction {
 }
 
 export interface BaseSchema extends RootSchema {
+    _format: string;
+    url: string;
     photo: string;
     thumbnailUrl: string;
     yield: string | number;
