@@ -13,4 +13,4 @@ updates:
     reviewers:
       - 'arcetros'
     open-pull-requests-limit: 10
-    target-branch: 'development'
+    target-branch: 'main'
